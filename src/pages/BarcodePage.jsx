@@ -1,9 +1,9 @@
+import { useState } from 'react'
 import SectionCardComponent from '../components/common/SectionCardComponent'
 import AppLayout from '../components/layout/AppLayout'
 import BarcodeProductCardComponent from '../components/barcodes/BarcodeProductCardComponent'
 import ProductSearchFormComponent from '../components/products/ProductSearchFormComponent'
 import ProductSearchResultsComponent from '../components/products/ProductSearchResultsComponent'
-import { useBarcodeAssignment } from '../hooks/useBarcodeAssignment'
 import { useProductSearch } from '../hooks/useProductSearch'
 import { isValidBarcode } from '../utils/BarcodeUtils'
 
@@ -15,18 +15,18 @@ const noResultsMessage = (text) => (
 
 const BarcodePage = () => {
   const { text, setText, searching, results, search, replaceProduct } = useProductSearch()
-  const assignment = useBarcodeAssignment({ onAssigned: replaceProduct })
+  const [selected, setSelected] = useState(null)
 
   const handleSearch = async () => {
     const found = await search()
     // Si se leyó un código de barras y hay un solo producto, se abre directo
-    if (found?.products.length === 1 && found.products[0].barcode === found.text) assignment.open(found.products[0])
+    if (found?.products.length === 1 && found.products[0].barcode === found.text) setSelected(found.products[0])
   }
 
-  if (assignment.product) {
+  if (selected) {
     return (
       <AppLayout title="Códigos de barras" back>
-        <BarcodeProductCardComponent assignment={assignment} />
+        <BarcodeProductCardComponent product={selected} onAssigned={replaceProduct} onClose={() => setSelected(null)} />
       </AppLayout>
     )
   }
@@ -43,7 +43,7 @@ const BarcodePage = () => {
       )}
 
       {results?.products.length > 0 && (
-        <ProductSearchResultsComponent products={results.products} total={results.total} onSelect={assignment.open} />
+        <ProductSearchResultsComponent products={results.products} total={results.total} onSelect={setSelected} />
       )}
     </AppLayout>
   )

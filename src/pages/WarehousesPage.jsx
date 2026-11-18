@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import AppLayout from '../components/layout/AppLayout'
-import LoaderPata from '../components/common/LoaderPata'
 import EmptyStateComponent from '../components/common/EmptyStateComponent'
+import LoadStateComponent from '../components/common/LoadStateComponent'
 import SectionCardComponent from '../components/common/SectionCardComponent'
 import WarehouseFormComponent from '../components/warehouses/WarehouseFormComponent'
 import WarehouseListComponent from '../components/warehouses/WarehouseListComponent'
@@ -39,14 +39,10 @@ const WarehousesPage = () => {
       </SectionCardComponent>
 
       <SectionCardComponent title="Plantas registradas">
-        {loading && <LoaderPata texto="Cargando plantas..." />}
-        {!loading && error && (
-          <EmptyStateComponent message={error}>
-            <button type="button" className="form-secondary" onClick={reload}>Reintentar</button>
-          </EmptyStateComponent>
-        )}
-        {!loading && !error && warehouses.length === 0 && <EmptyStateComponent message="Todavía no hay plantas registradas." />}
-        {!loading && !error && warehouses.length > 0 && <WarehouseListComponent warehouses={warehouses} onEdit={handleEdit} />}
+        <LoadStateComponent loading={loading} loadingText="Cargando plantas..." error={error} onRetry={reload}>
+          {warehouses.length === 0 && <EmptyStateComponent message="Todavía no hay plantas registradas." />}
+          {warehouses.length > 0 && <WarehouseListComponent warehouses={warehouses} onEdit={handleEdit} />}
+        </LoadStateComponent>
       </SectionCardComponent>
     </AppLayout>
   )

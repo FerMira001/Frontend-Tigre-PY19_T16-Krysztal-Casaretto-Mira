@@ -1,20 +1,50 @@
-import { useId, useState } from 'react'
+import { useEffect, useId, useState } from 'react'
 import AppLayout from '../components/layout/AppLayout'
-import LoaderPata from '../components/common/LoaderPata'
 import EmptyStateComponent from '../components/common/EmptyStateComponent'
+import LoadStateComponent from '../components/common/LoadStateComponent'
 import SectionCardComponent from '../components/common/SectionCardComponent'
 import UserListComponent from '../components/users/UserListComponent'
 import UserWarehousesEditorComponent from '../components/users/UserWarehousesEditorComponent'
-import { useUsers } from '../hooks/useUsers'
 import { useWarehouses } from '../hooks/useWarehouses'
+import { getErrorMessage } from '../services/ApiClient'
+import { listUsers } from '../services/UserService'
+
+const LIMIT = 20
 
 const UsersPage = () => {
   const idSearch = useId()
   const [text, setText] = useState('')
   const [search, setSearch] = useState('')
   const [editing, setEditing] = useState(null)
-  const { users, total, loading, error, reload } = useUsers(search)
+  const [users, setUsers] = useState([])
+  const [total, setTotal] = useState(0)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  // Cambiarlo vuelve a pedir la lista
+  const [reloadKey, setReloadKey] = useState(0)
   const { warehouses } = useWarehouses()
+
+  useEffect(() => {
+    let ignore = false
+    listUsers({ search, limit: LIMIT })
+      .then(({ data, pagination }) => {
+        if (ignore) return
+        setUsers(data)
+        setTotal(pagination.total)
+        setError(null)
+      })
+      .catch((err) => {
+        if (!ignore) setError(getErrorMessage(err))
+      })
+      .finally(() => {
+        if (!ignore) setLoading(false)
+      })
+    return () => {
+      ignore = true
+    }
+  }, [search, reloadKey])
+
+  const reload = () => setReloadKey((key) => key + 1)
 
   const handleSearch = (event) => {
     event.preventDefault()
@@ -54,19 +84,15 @@ const UsersPage = () => {
       </SectionCardComponent>
 
       <SectionCardComponent title="Usuarios">
-        {loading && <LoaderPata texto="Cargando usuarios..." />}
-        {!loading && error && (
-          <EmptyStateComponent message={error}>
-            <button type="button" className="form-secondary" onClick={reload}>Reintentar</button>
-          </EmptyStateComponent>
-        )}
-        {!loading && !error && users.length === 0 && <EmptyStateComponent message="No hay usuarios que coincidan con la búsqueda." />}
-        {!loading && !error && users.length > 0 && (
-          <>
-            {total > users.length && <p className="twofa-text">Se muestran {users.length} de {total}. Afiná la búsqueda para encontrarlo más rápido.</p>}
-            <UserListComponent users={users} onEdit={setEditing} />
-          </>
-        )}
+        <LoadStateComponent loading={loading} loadingText="Cargando usuarios..." error={error} onRetry={reload}>
+          {users.length === 0 && <EmptyStateComponent message="No hay usuarios que coincidan con la búsqueda." />}
+          {users.length > 0 && (
+            <>
+              {total > users.length && <p className="twofa-text">Se muestran {users.length} de {total}. Afiná la búsqueda para encontrarlo más rápido.</p>}
+              <UserListComponent users={users} onEdit={setEditing} />
+            </>
+          )}
+        </LoadStateComponent>
       </SectionCardComponent>
     </AppLayout>
   )

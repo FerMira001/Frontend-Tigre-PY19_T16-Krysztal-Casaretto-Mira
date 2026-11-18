@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 import LoaderPata from '../common/LoaderPata'
-import WarehouseChecklistComponent from '../warehouses/WarehouseChecklistComponent'
+import WarehouseOptionsComponent from '../warehouses/WarehouseOptionsComponent'
 import { getErrorMessage } from '../../services/ApiClient'
 import { updateUserWarehouses } from '../../services/UserService'
 
@@ -24,7 +24,7 @@ const UserWarehousesEditorComponent = ({ user, warehouses, onSaved, onCancel }) 
   return (
     <>
       <p className="twofa-text">{user.email}</p>
-      <WarehouseChecklistComponent legend="Plantas asignadas" warehouses={warehouses} value={selected} onChange={setSelected} />
+      <WarehouseOptionsComponent multiple legend="Plantas asignadas" warehouses={warehouses} value={selected} onChange={setSelected} />
       {saving ? (
         <LoaderPata texto="Guardando..." />
       ) : (

@@ -1,10 +1,4 @@
-import { useNavigate } from 'react-router-dom'
-
-const ArrowIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M9 5l7 7-7 7" />
-  </svg>
-)
+import NavCardComponent from '../common/NavCardComponent'
 
 const WarehouseIcon = () => (
   <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -47,19 +41,8 @@ const CARDS = [
 ]
 
 // Tarjetas de la home para el perfil Administrador (CU17)
-const AdminNavCardsComponent = () => {
-  const navigate = useNavigate()
-
-  return CARDS.map(({ path, title, subtitle, Icon }) => (
-    <button key={path} type="button" className="home-card" onClick={() => navigate(path)}>
-      <span className="home-card-icon"><Icon /></span>
-      <span className="home-card-text">
-        <span className="home-card-title">{title}</span>
-        <span className="home-card-sub">{subtitle}</span>
-      </span>
-      <span className="home-card-arrow"><ArrowIcon /></span>
-    </button>
-  ))
-}
+const AdminNavCardsComponent = () => (
+  CARDS.map(({ path, title, subtitle, Icon }) => <NavCardComponent key={path} to={path} title={title} subtitle={subtitle} Icon={Icon} />)
+)
 
 export default AdminNavCardsComponent

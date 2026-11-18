@@ -1,10 +1,4 @@
-import { useNavigate } from 'react-router-dom'
-
-const ArrowIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M9 5l7 7-7 7" />
-  </svg>
-)
+import NavCardComponent from '../common/NavCardComponent'
 
 const MapIcon = () => (
   <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -14,19 +8,8 @@ const MapIcon = () => (
 )
 
 // Tarjeta de la home para todos los perfiles (CU03)
-const MapNavCardComponent = () => {
-  const navigate = useNavigate()
-
-  return (
-    <button type="button" className="home-card" onClick={() => navigate('/mapa')}>
-      <span className="home-card-icon"><MapIcon /></span>
-      <span className="home-card-text">
-        <span className="home-card-title">Mapa</span>
-        <span className="home-card-sub">Ver el plano de la planta y sus estanterías</span>
-      </span>
-      <span className="home-card-arrow"><ArrowIcon /></span>
-    </button>
-  )
-}
+const MapNavCardComponent = () => (
+  <NavCardComponent to="/mapa" title="Mapa" subtitle="Ver el plano de la planta y sus estanterías" Icon={MapIcon} />
+)
 
 export default MapNavCardComponent

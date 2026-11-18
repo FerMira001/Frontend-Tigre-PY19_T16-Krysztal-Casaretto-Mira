@@ -1,15 +1,15 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import AppLayout from '../components/layout/AppLayout'
 import EmptyStateComponent from '../components/common/EmptyStateComponent'
-import LoaderPata from '../components/common/LoaderPata'
+import LoadStateComponent from '../components/common/LoadStateComponent'
 import ElementStockDetailComponent from '../components/map/ElementStockDetailComponent'
 import MapCanvasComponent from '../components/map/MapCanvasComponent'
 import MapOccupancyLabelsComponent from '../components/map/MapOccupancyLabelsComponent'
 import MapViewportComponent from '../components/map/MapViewportComponent'
 import { useWarehouseMap } from '../hooks/useWarehouseMap'
-import { useWarehouseOccupancy } from '../hooks/useWarehouseOccupancy'
+import { getWarehouseOccupancy } from '../services/StockLocationService'
 import { getPlanSize } from '../utils/MapUtils'
 import '../styles/WarehouseMap.css'
 
@@ -19,53 +19,63 @@ const WarehouseMapPage = () => {
   const warehouseId = useSelector((state) => state.warehouse.selected?._id)
   const rol = useSelector((state) => state.usuario.rol)
   const { elements, loading, error, reload } = useWarehouseMap(warehouseId)
-  const occupancy = useWarehouseOccupancy(warehouseId)
+  // Ocupación de cada elemento, por id (CU03)
+  const [occupancy, setOccupancy] = useState(new Map())
   const [selectedId, setSelectedId] = useState(null)
   const plan = useMemo(() => getPlanSize(elements, PLAN_MARGIN), [elements])
   const selected = elements.find(({ _id }) => _id === selectedId)
-  const ready = !loading && !error && elements.length > 0
+
+  // Si falla, el mapa se ve igual pero sin los contadores
+  useEffect(() => {
+    let ignore = false
+    getWarehouseOccupancy(warehouseId)
+      .then((list) => {
+        if (!ignore) setOccupancy(new Map(list.map((item) => [item.elementId, item])))
+      })
+      .catch(() => {
+        if (!ignore) setOccupancy(new Map())
+      })
+    return () => {
+      ignore = true
+    }
+  }, [warehouseId])
 
   return (
     <AppLayout title="Mapa" back>
       <div className={`map-page${selected ? ' map-page--detail' : ''}`}>
-        {loading && <LoaderPata texto="Cargando el mapa..." />}
-        {!loading && error && (
-          <EmptyStateComponent message={error}>
-            <button type="button" className="form-secondary" onClick={reload}>Reintentar</button>
-          </EmptyStateComponent>
-        )}
-        {!loading && !error && elements.length === 0 && (
-          <EmptyStateComponent message="Esta planta todavía no tiene su estructura configurada.">
-            {rol === 'Administrador' && <Link className="form-secondary" to="/estructura-planta">Configurar la estructura</Link>}
-          </EmptyStateComponent>
-        )}
-        {ready && (
-          <>
-            <div className="map-page-plan">
-              <p className="map-hint">Tocá una estantería o zona para ver qué tiene guardado</p>
-              <MapViewportComponent>
-                <MapCanvasComponent
-                  plan={plan}
-                  elements={elements}
-                  selectedId={selectedId}
-                  onSelect={(element) => setSelectedId(element._id)}
-                >
-                  <MapOccupancyLabelsComponent elements={elements} occupancy={occupancy} selectedId={selectedId} />
-                </MapCanvasComponent>
-              </MapViewportComponent>
-            </div>
-            {selected && (
-              <div className="map-page-detail">
-                <ElementStockDetailComponent
-                  key={selected._id}
-                  warehouseId={warehouseId}
-                  element={selected}
-                  onClose={() => setSelectedId(null)}
-                />
+        <LoadStateComponent loading={loading} loadingText="Cargando el mapa..." error={error} onRetry={reload}>
+          {elements.length === 0 ? (
+            <EmptyStateComponent message="Esta planta todavía no tiene su estructura configurada.">
+              {rol === 'Administrador' && <Link className="form-secondary" to="/estructura-planta">Configurar la estructura</Link>}
+            </EmptyStateComponent>
+          ) : (
+            <>
+              <div className="map-page-plan">
+                <p className="map-hint">Tocá una estantería o zona para ver qué tiene guardado</p>
+                <MapViewportComponent>
+                  <MapCanvasComponent
+                    plan={plan}
+                    elements={elements}
+                    selectedId={selectedId}
+                    onSelect={(element) => setSelectedId(element._id)}
+                  >
+                    <MapOccupancyLabelsComponent elements={elements} occupancy={occupancy} selectedId={selectedId} />
+                  </MapCanvasComponent>
+                </MapViewportComponent>
               </div>
-            )}
-          </>
-        )}
+              {selected && (
+                <div className="map-page-detail">
+                  <ElementStockDetailComponent
+                    key={selected._id}
+                    warehouseId={warehouseId}
+                    element={selected}
+                    onClose={() => setSelectedId(null)}
+                  />
+                </div>
+              )}
+            </>
+          )}
+        </LoadStateComponent>
       </div>
     </AppLayout>
   )

@@ -1,8 +1,10 @@
+import { useState } from 'react'
+import { toast } from 'react-toastify'
 import SectionCardComponent from '../common/SectionCardComponent'
 import ProductDetailsComponent from '../products/ProductDetailsComponent'
 import BarcodeConfirmComponent from './BarcodeConfirmComponent'
 import BarcodeFormComponent from './BarcodeFormComponent'
-import { BARCODE_STEPS } from '../../hooks/useBarcodeAssignment'
+import { assignBarcode } from '../../services/ProductService'
 
 const BarcodeIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
@@ -10,30 +12,62 @@ const BarcodeIcon = () => (
   </svg>
 )
 
-// Producto elegido y el paso actual del CU19: ver, ingresar el código o confirmar
-const BarcodeProductCardComponent = ({ assignment }) => {
-  const { product, step, code, saving, close, startEntry, requestConfirmation, cancel, confirm } = assignment
+// CU19 con el producto elegido: ver, ingresar el código ('entry') o confirmar ('confirmation')
+const BarcodeProductCardComponent = ({ product: initialProduct, onAssigned, onClose }) => {
+  const [product, setProduct] = useState(initialProduct)
+  const [step, setStep] = useState('product')
+  const [code, setCode] = useState('')
+  const [saving, setSaving] = useState(false)
+
+  const requestConfirmation = (value) => {
+    setCode(value)
+    setStep('confirmation')
+  }
+
+  const cancel = () => {
+    setStep('product')
+    setCode('')
+    toast.info('Operación cancelada. No se registraron cambios.')
+  }
+
+  const confirmBarcode = async () => {
+    setSaving(true)
+    try {
+      const updated = await assignBarcode(product._id, code)
+      setProduct(updated)
+      setStep('product')
+      setCode('')
+      onAssigned(updated)
+      toast.success('Código de barras asociado correctamente.')
+    } catch (err) {
+      // E1 o formato inválido: se vuelve a pedir el código
+      setStep('entry')
+      toast.error(err.response?.data?.message ?? 'No fue posible registrar la asociación.')
+    } finally {
+      setSaving(false)
+    }
+  }
 
   return (
     <SectionCardComponent title={product.sapCode}>
       <ProductDetailsComponent product={product} />
 
-      {step === BARCODE_STEPS.PRODUCT && (
+      {step === 'product' && (
         <div className="barcode-actions">
-          <button type="button" className="form-submit barcode-button" onClick={startEntry}>
+          <button type="button" className="form-submit barcode-button" onClick={() => setStep('entry')}>
             <BarcodeIcon />
             {product.barcode ? 'Reemplazar código de barras' : 'Asociar código de barras'}
           </button>
-          <button type="button" className="form-secondary" onClick={close}>Elegir otro producto</button>
+          <button type="button" className="form-secondary" onClick={onClose}>Elegir otro producto</button>
         </div>
       )}
 
-      {step === BARCODE_STEPS.ENTRY && (
+      {step === 'entry' && (
         <BarcodeFormComponent product={product} initialCode={code} onContinue={requestConfirmation} onCancel={cancel} />
       )}
 
-      {step === BARCODE_STEPS.CONFIRMATION && (
-        <BarcodeConfirmComponent product={product} code={code} saving={saving} onConfirm={confirm} onCancel={cancel} />
+      {step === 'confirmation' && (
+        <BarcodeConfirmComponent product={product} code={code} saving={saving} onConfirm={confirmBarcode} onCancel={cancel} />
       )}
     </SectionCardComponent>
   )

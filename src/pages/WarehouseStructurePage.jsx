@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import AppLayout from '../components/layout/AppLayout'
-import EmptyStateComponent from '../components/common/EmptyStateComponent'
-import LoaderPata from '../components/common/LoaderPata'
+import LoadStateComponent from '../components/common/LoadStateComponent'
 import SectionCardComponent from '../components/common/SectionCardComponent'
 import EditorSaveBarComponent from '../components/map/EditorSaveBarComponent'
 import ElementPanelComponent from '../components/map/ElementPanelComponent'
@@ -58,13 +57,7 @@ const WarehouseStructurePage = () => {
   return (
     <AppLayout title="Estructura de planta" back confirmLogout={guard.confirmLogout}>
       <div className="map-page editor-page">
-        {loading && <LoaderPata texto="Cargando la estructura..." />}
-        {!loading && error && (
-          <EmptyStateComponent message={error}>
-            <button type="button" className="form-secondary" onClick={editor.reload}>Reintentar</button>
-          </EmptyStateComponent>
-        )}
-        {!loading && !error && (
+        <LoadStateComponent loading={loading} loadingText="Cargando la estructura..." error={error} onRetry={editor.reload}>
           <div className={layoutClass}>
             <div className="editor-layout-main">
               <MapViewportComponent onTransformed={measure}>
@@ -123,7 +116,7 @@ const WarehouseStructurePage = () => {
               </SectionCardComponent>
             </div>
           </div>
-        )}
+        </LoadStateComponent>
       </div>
       {guard.asking && <UnsavedChangesModalComponent onStay={guard.stay} onLeave={guard.leave} />}
     </AppLayout>

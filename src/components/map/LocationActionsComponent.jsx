@@ -1,3 +1,4 @@
+
 import { useId, useState } from 'react'
 import { toast } from 'react-toastify'
 import axios from 'axios'
@@ -24,7 +25,7 @@ const LocationActionsComponent = ({ hasStock, elementId, positionId, onChanged, 
       .get('http://localhost:8080/v1/products', {
         params: { search: product },
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`, 
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       })
       .then((response) => {
@@ -39,6 +40,13 @@ const LocationActionsComponent = ({ hasStock, elementId, positionId, onChanged, 
 
   const addStock = (event) => {
     event.preventDefault() // evita que el formulario recargue la página
+
+    // Validar que se haya seleccionado un producto
+    if (!productSelected?._id) {
+      toast.error('Debés seleccionar un producto antes de agregar stock.')
+      return
+    }
+
     axios.post(
       `http://localhost:8080/v1/warehouses/${warehouseId}/elements/${elementId}/add`,
       {
@@ -65,6 +73,13 @@ const LocationActionsComponent = ({ hasStock, elementId, positionId, onChanged, 
 
   const removeStock = (event) => {
     event.preventDefault() // evita que el formulario recargue la página
+
+    // Validar que se haya seleccionado un producto
+    if (!productSelected?._id) {
+      toast.error('Debés seleccionar un producto antes de disminuir stock.')
+      return
+    }
+
     axios.post(
       `http://localhost:8080/v1/warehouses/${warehouseId}/elements/${elementId}/remove`,
       {
@@ -116,8 +131,6 @@ const LocationActionsComponent = ({ hasStock, elementId, positionId, onChanged, 
           {productSelected && <p>Elegido: {productSelected.sapCode} · {productSelected.description}</p>}
         </div>
 
-
-
         <div className="form-field">
           <label htmlFor={quantityId}>Cantidad</label>
           <input
@@ -133,7 +146,7 @@ const LocationActionsComponent = ({ hasStock, elementId, positionId, onChanged, 
         </div>
 
         <div className="location-form-buttons">
-          <button type="submit" className="form-secondary" >Agregar stock</button>
+          <button type="submit" className="form-secondary">Agregar stock</button>
 
           <button
             type="button"

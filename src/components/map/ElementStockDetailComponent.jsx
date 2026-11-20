@@ -1,3 +1,4 @@
+
 import { useEffect, useMemo, useState } from 'react'
 import LoadStateComponent from '../common/LoadStateComponent'
 import SectionCardComponent from '../common/SectionCardComponent'
@@ -84,12 +85,25 @@ const ElementStockDetailComponent = ({ warehouseId, element, onClose }) => {
         element.description && <p className="twofa-text">{element.description}</p>
       )}
       <LoadStateComponent loading={loading} loadingText="Cargando el contenido..." error={error} onRetry={reload}>
-        {!rack && <LocationStockComponent items={stockAt(stock, null)} />}
+        {!rack && (
+          <LocationStockComponent
+            items={stockAt(stock, null)}
+            elementId={element._id}
+            positionId={null}
+            onChanged={reload}
+          />
+        )}
         {rack && !positionId && <p className="twofa-text map-position-hint">Tocá una posición para ver sus productos.</p>}
         {rack && positionId && (
           <>
             <PositionHeader rack={element} positionId={positionId} />
-            <LocationStockComponent key={positionId} items={stockAt(stock, positionId)} />
+            <LocationStockComponent
+              key={positionId}
+              items={stockAt(stock, positionId)}
+              elementId={element._id}
+              positionId={positionId}
+              onChanged={reload}
+            />
           </>
         )}
       </LoadStateComponent>

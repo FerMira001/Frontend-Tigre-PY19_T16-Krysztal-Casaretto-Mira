@@ -33,11 +33,24 @@ const CycleCountIcon = () => (
   </svg>
 )
 
+const PickingOrderIcon = () => (
+  <svg width="30" height="30" viewBox="0 0 24 24"
+    fill="none" stroke="currentColor" strokeWidth="1.8"
+    strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <rect x="5" y="4" width="14" height="17" rx="2" />
+    <path d="M9 4V2h6v2" />
+    <path d="M9 10h6" />
+    <path d="M9 14h6" />
+    <path d="M9 18l2 2 4-4" />
+  </svg>
+)
+
 const CARDS = [
   { path: '/estructura-planta', title: 'Estructura de planta', subtitle: 'Configurar el plano y las estanterías', Icon: StructureIcon },
   { path: '/plantas', title: 'Plantas', subtitle: 'Crear y editar las plantas', Icon: WarehouseIcon },
   { path: '/usuarios', title: 'Usuarios', subtitle: 'Asignar operarios a cada planta', Icon: UsersIcon },
   { path: '/inventarios-ciclicos', title: 'Inventarios cíclicos', subtitle: 'Gestionar los inventarios de stock', Icon: CycleCountIcon },
+  { path: '/ordenes-de-picking', title: 'Órdenes de picking', subtitle: 'Gestionar órdenes de picking y reposición', Icon: PickingOrderIcon },
 ]
 
 // Tarjetas de la home para el perfil Administrador (CU17)

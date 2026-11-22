@@ -1,0 +1,157 @@
+
+/* CU09: consulta de stock */
+
+/* Información de la planta */
+.stock-intro {
+    margin: 0 0 20px;
+    color: var(--tigre-muted);
+    font-size: 0.95rem;
+}
+
+.stock-intro strong {
+    color: var(--tigre-navy);
+}
+
+/* Descripciones y cantidad de productos */
+.stock-description {
+    color: var(--tigre-muted);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 12px 0;
+}
+
+.stock-count {
+    color: var(--tigre-text);
+    font-size: 0.95rem;
+    margin: 16px 0;
+}
+
+/* Buscador */
+.stock-search {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 18px;
+    border: 1px solid var(--tigre-border);
+    border-radius: 6px;
+    background: var(--tigre-surface);
+    color: var(--tigre-text);
+    font: inherit;
+    font-size: 0.95rem;
+}
+
+.stock-search:focus {
+    outline: none;
+    border-color: var(--tigre-blue);
+    box-shadow: 0 0 0 3px var(--tigre-focus);
+}
+
+/* Tabla de resumen */
+.stock-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    margin: 16px 0;
+    border: 1px solid var(--tigre-border);
+    border-radius: 8px;
+}
+
+.stock-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+.stock-table th {
+    padding: 14px 12px;
+    background: var(--tigre-blue-soft);
+    color: var(--tigre-navy);
+    font-weight: 600;
+}
+
+.stock-table td {
+    padding: 13px 12px;
+    border-top: 1px solid var(--tigre-border);
+    color: var(--tigre-text);
+}
+
+.stock-table th:last-child,
+.stock-table td:last-child {
+    text-align: right;
+    font-weight: 600;
+}
+
+/* Filas seleccionables */
+.stock-clickable {
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.stock-clickable:hover {
+    background: var(--tigre-ice);
+}
+
+/* Detalle del producto */
+.stock-locations {
+    list-style: none;
+    padding: 0;
+    margin: 16px 0;
+}
+
+.stock-locations li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 12px;
+    border-bottom: 1px solid var(--tigre-border);
+    font-size: 0.9rem;
+}
+
+.stock-locations li strong {
+    color: var(--tigre-navy);
+}
+
+/* Último movimiento */
+.stock-movement {
+    background: var(--tigre-ice);
+    border: 1px solid var(--tigre-border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 12px;
+}
+
+.stock-movement p {
+    margin: 8px 0;
+    font-size: 0.9rem;
+}
+
+.stock-movement strong {
+    color: var(--tigre-navy);
+}
+
+/* Mensajes de error */
+.stock-error {
+    color: var(--tigre-error);
+    font-size: 0.9rem;
+    margin: 16px 0;
+}
+
+/* Ajustes para celulares */
+@media (max-width: 600px) {
+    .stock-table {
+        font-size: 0.8rem;
+    }
+
+    .stock-table th,
+    .stock-table td {
+        padding: 10px 8px;
+    }
+
+    .stock-search {
+        font-size: 1rem;
+    }
+
+    .stock-movement {
+        padding: 12px;
+    }
+}

@@ -22,6 +22,7 @@ import RackEditorPage from './pages/RackEditorPage'
 import CycleCountsPage from './pages/CycleCountsPage'
 import MyCountTasksPage from './pages/MyCountTasksPage'
 import PickingOrdersPage from './pages/PickingOrdersPage'
+import StockConsultPage from './pages/StockConsultPage'
 
 function App() {
   return (
@@ -55,6 +56,7 @@ function App() {
               <Route path="/estructura-planta/:elementId" element={<RackEditorPage />} />
               <Route path="/inventarios-ciclicos" element={<CycleCountsPage />} />
               <Route path="/ordenes-de-picking" element={<PickingOrdersPage />} />
+              <Route path="/consulta-stock" element={<StockConsultPage />} />
             </Route>
           </Route>
         </Route>

@@ -22,3 +22,15 @@ export const removeStockFromElement = async (warehouseId, elementId, quantity, p
     const { data } = await apiClient.post(`/warehouses/${warehouseId}/elements/${elementId}/remove`, {positionId, productId, quantity});
     return data.data;
 }
+
+// CU09: consultar el resumen de stock de una planta
+export const getWarehouseStockSummary = async (warehouseId) => {
+    const { data } = await apiClient.get(`/warehouses/${warehouseId}/stock-summary`);
+    return data.data;
+};
+
+// CU09: consultar el detalle de stock de un producto
+export const getProductStockSummary = async (warehouseId, productId) => {
+    const { data } = await apiClient.get(`/warehouses/${warehouseId}/products/${productId}/stock`);
+    return data.data;
+};

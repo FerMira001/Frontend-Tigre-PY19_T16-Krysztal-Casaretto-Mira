@@ -51,6 +51,7 @@ const CARDS = [
   { path: '/usuarios', title: 'Usuarios', subtitle: 'Asignar operarios a cada planta', Icon: UsersIcon },
   { path: '/inventarios-ciclicos', title: 'Inventarios cíclicos', subtitle: 'Gestionar los inventarios de stock', Icon: CycleCountIcon },
   { path: '/ordenes-de-picking', title: 'Órdenes de picking', subtitle: 'Gestionar órdenes de picking y reposición', Icon: PickingOrderIcon },
+  { path: '/consulta-stock', title: 'Consulta de stock', subtitle: 'Consultar y descargar el stock de productos', Icon: WarehouseIcon },
 ]
 
 // Tarjetas de la home para el perfil Administrador (CU17)

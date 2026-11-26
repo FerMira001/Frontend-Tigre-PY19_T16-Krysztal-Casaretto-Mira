@@ -24,7 +24,7 @@ const ResetPasswordPage = () => {
     setIsLoading(true);
 
     try {
-      await axios.post('http://localhost:8080/v1/auth/reset-password', {
+      await axios.post(`${import.meta.env.VITE_API_URL}/auth/reset-password`, {
         token,
         newPassword: formData.newPassword,
         confirmPassword: formData.confirmPassword

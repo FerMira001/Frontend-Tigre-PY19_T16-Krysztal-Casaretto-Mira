@@ -17,7 +17,7 @@ const DobleFactorPage = () => {
   const apiGenerarQr = () => {
     axios
       .post(
-        "http://localhost:8080/v1/auth/2fa/setup",
+        `${import.meta.env.VITE_API_URL}/auth/2fa/setup`,
         {},
         {
           headers: {
@@ -40,7 +40,7 @@ const DobleFactorPage = () => {
     e.preventDefault();
     axios
       .post(
-        "http://localhost:8080/v1/auth/2fa/enable",
+        `${import.meta.env.VITE_API_URL}/auth/2fa/enable`,
         { token: codigo },
         {
           headers: {

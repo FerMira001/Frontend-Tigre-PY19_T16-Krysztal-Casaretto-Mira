@@ -17,7 +17,7 @@ const LoginForm = () => {
   const { register, handleSubmit, formState: { isValid } } = useForm({ mode: 'onChange' });
 
   const apiLogin = ({ email, contrasena, token }) => {
-    axios.post('http://localhost:8080/v1/auth/login', { email, contrasena, token })
+    axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, { email, contrasena, token })
       .then((response) => {
         if(response.data.requiere2FA) {
           setRequiere2FA(true);

@@ -19,7 +19,7 @@ const ForgotPasswordPage = () => {
     setIsLoading(true);
 
     try {
-      await axios.post('http://localhost:8080/v1/auth/forgot-password', {
+      await axios.post(`${import.meta.env.VITE_API_URL}/auth/forgot-password`, {
         email
       });
 

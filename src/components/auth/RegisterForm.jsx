@@ -18,7 +18,7 @@ const RegisterForm = () => {
     const token = localStorage.getItem("token");
     console.log(token);
     
-    axios.post("http://localhost:8080/v1/auth/registro", { email, nombreUsuario, contrasena, repetirContrasena, rol, warehouses }, {
+    axios.post(`${import.meta.env.VITE_API_URL}/auth/registro`, { email, nombreUsuario, contrasena, repetirContrasena, rol, warehouses }, {
       headers: {
         Authorization: `Bearer ${token}`,//no es necesario mandar id porque viaja en el token
       },

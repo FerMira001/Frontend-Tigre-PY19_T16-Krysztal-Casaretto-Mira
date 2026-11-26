@@ -22,7 +22,7 @@ const LocationActionsComponent = ({ hasStock, elementId, positionId, onChanged, 
 
   const searchProduct = () => {
     axios
-      .get('http://localhost:8080/v1/products', {
+      .get(`${import.meta.env.VITE_API_URL}/products`, {
         params: { search: product },
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -48,7 +48,7 @@ const LocationActionsComponent = ({ hasStock, elementId, positionId, onChanged, 
     }
 
     axios.post(
-      `http://localhost:8080/v1/warehouses/${warehouseId}/elements/${elementId}/add`,
+      `${import.meta.env.VITE_API_URL}/warehouses/${warehouseId}/elements/${elementId}/add`,
       {
         positionId: positionId || null,
         productId: productSelected?._id,
@@ -81,7 +81,7 @@ const LocationActionsComponent = ({ hasStock, elementId, positionId, onChanged, 
     }
 
     axios.post(
-      `http://localhost:8080/v1/warehouses/${warehouseId}/elements/${elementId}/remove`,
+      `${import.meta.env.VITE_API_URL}/warehouses/${warehouseId}/elements/${elementId}/remove`,
       {
         positionId: positionId || null,
         productId: productSelected?._id,
